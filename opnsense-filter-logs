@@ -227,6 +227,21 @@
       },
       "condition_type": "none",
       "condition_value": ""
+    },
+    {
+      "title": "Cleanup message on relayed hosts",
+      "extractor_type": "regex_replace",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "full_message",
+      "target_field": "message",
+      "extractor_config": {
+        "replacement": "$1",
+        "regex": ".*filterlog.*\\]: ([^,]+,.+)"
+      },
+      "condition_type": "none",
+      "condition_value": ""
     }
   ],
   "version": "4.3.6"
