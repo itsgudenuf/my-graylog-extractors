@@ -1,0 +1,37 @@
+{
+  "extractors": [
+    {
+      "title": "Strip the domain name from source",
+      "extractor_type": "regex_replace",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "source",
+      "target_field": "source",
+      "extractor_config": {
+        "regex": "^(.*).YOURDOMAIN.TLD",
+        "replacement": "$1",
+        "replace_all": true
+      },
+      "condition_type": "regex",
+      "condition_value": "^.*YOURDOMAIN.TLD"
+    },
+    {
+      "title": "Strip hostname from Message",
+      "extractor_type": "regex_replace",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "message",
+      "target_field": "message",
+      "extractor_config": {
+        "regex": "^.*YOURDOMAIN.TLD (.*)",
+        "replacement": "$1",
+        "replace_all": true
+      },
+      "condition_type": "regex",
+      "condition_value": "^.*YOURDOMAIN.TLD"
+    }
+  ],
+  "version": "4.3.6"
+}
