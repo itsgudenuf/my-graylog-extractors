@@ -1,0 +1,233 @@
+{
+  "extractors": [
+    {
+      "title": "opnsense filterlog ipv4",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 6,
+      "cursor_strategy": "copy",
+      "source_field": "opnsense_log_data",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": ",%{GREEDYDATA:ipv4_specific_data},%{INT:length},%{IPV4:source_address},%{IPV4:destination_address},%{GREEDYDATA:protocol_specific_data}",
+        "named_captures_only": true
+      },
+      "condition_type": "none",
+      "condition_value": ""
+    },
+    {
+      "title": "opnsense filterlog common_log_data",
+      "extractor_type": "regex",
+      "converters": [
+        {
+          "type": "csv",
+          "config": {
+            "column_header": "rule_number,sub_rule_number,anchor,tracker,real_interface,reason,action,direction,ip_version"
+          }
+        }
+      ],
+      "order": 5,
+      "cursor_strategy": "cut",
+      "source_field": "opnsense_log_data",
+      "target_field": "opnsense_common_log_data",
+      "extractor_config": {
+        "regex_value": "^(([^,]*,){8}[^,]*),"
+      },
+      "condition_type": "none",
+      "condition_value": ""
+    },
+    {
+      "title": "opnsense filterlog udp-data",
+      "extractor_type": "copy_input",
+      "converters": [
+        {
+          "type": "csv",
+          "config": {
+            "column_header": "source_port,destination_port,data_length"
+          }
+        }
+      ],
+      "order": 10,
+      "cursor_strategy": "cut",
+      "source_field": "protocol_specific_data",
+      "target_field": "udp_data",
+      "extractor_config": {},
+      "condition_type": "regex",
+      "condition_value": "^\\d+,\\d+,\\d+$"
+    },
+    {
+      "title": "opnsense filterlog ipv6",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 7,
+      "cursor_strategy": "copy",
+      "source_field": "opnsense_log_data",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": ",%{GREEDYDATA:ipv6_specific_data},%{INT:length},%{IPV6:source_address},%{IPV6:destination_address},%{GREEDYDATA:protocol_specific_data}",
+        "named_captures_only": true
+      },
+      "condition_type": "none",
+      "condition_value": ""
+    },
+    {
+      "title": "opnsense filterlog icmp-data",
+      "extractor_type": "copy_input",
+      "converters": [],
+      "order": 14,
+      "cursor_strategy": "cut",
+      "source_field": "protocol_specific_data",
+      "target_field": "icmp_data",
+      "extractor_config": {},
+      "condition_type": "regex",
+      "condition_value": "^\\S+,\\S+"
+    },
+    {
+      "title": "opnsense filterlog icmp-type-echo-data",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 16,
+      "cursor_strategy": "copy",
+      "source_field": "icmp_type_data",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "%{NONNEGINT:icmp_id},%{NONNEGINT:icmp_sequence}"
+      },
+      "condition_type": "none",
+      "condition_value": ""
+    },
+    {
+      "title": "opnsense filterlog carp-data",
+      "extractor_type": "copy_input",
+      "converters": [
+        {
+          "type": "csv",
+          "config": {
+            "column_header": "carp_type,carp_ttl,vhid,version,advbase,advskew"
+          }
+        }
+      ],
+      "order": 11,
+      "cursor_strategy": "cut",
+      "source_field": "protocol_specific_data",
+      "target_field": "carp_data",
+      "extractor_config": {},
+      "condition_type": "regex",
+      "condition_value": "^(CARP|VRRP|carp|vrrp),\\d+\\d+\\d+\\d+$"
+    },
+    {
+      "title": "opnsense filterlog tcp-data",
+      "extractor_type": "copy_input",
+      "converters": [
+        {
+          "type": "csv",
+          "config": {
+            "column_header": "source_port,destination_port,data_length,tcp_flags,sequence_number,ack_number,tcp_window,urg,tcp_options"
+          }
+        }
+      ],
+      "order": 12,
+      "cursor_strategy": "cut",
+      "source_field": "protocol_specific_data",
+      "target_field": "tcp_data",
+      "extractor_config": {},
+      "condition_type": "regex",
+      "condition_value": "^\\d+,\\d+,\\d+,[SA.FRPUEW]+,([^,]*,){4}[^,]*$"
+    },
+    {
+      "title": "opnsense filterlog icmp-type-data",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 15,
+      "cursor_strategy": "copy",
+      "source_field": "icmp_data",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "^%{GREEDYDATA_NO_COMMA:icmp_type},%{GREEDYDATA:icmp_type_data}"
+      },
+      "condition_type": "string",
+      "condition_value": ","
+    },
+    {
+      "title": "opnsense filterlog ipv4-specific-data",
+      "extractor_type": "copy_input",
+      "converters": [
+        {
+          "type": "csv",
+          "config": {
+            "column_header": "tos,ecn,ttl,id,offset,flags,protocol_id,protocol"
+          }
+        }
+      ],
+      "order": 9,
+      "cursor_strategy": "copy",
+      "source_field": "ipv4_specific_data",
+      "target_field": "ipv4_specific_data",
+      "extractor_config": {},
+      "condition_type": "none",
+      "condition_value": ""
+    },
+    {
+      "title": "opnsense filterlog hbh-data",
+      "extractor_type": "copy_input",
+      "converters": [],
+      "order": 13,
+      "cursor_strategy": "cut",
+      "source_field": "protocol_specific_data",
+      "target_field": "hbh_data",
+      "extractor_config": {},
+      "condition_type": "regex",
+      "condition_value": "^HBH,"
+    },
+    {
+      "title": "opnsense filterlog ipv6-specific-data",
+      "extractor_type": "copy_input",
+      "converters": [
+        {
+          "type": "csv",
+          "config": {
+            "column_header": "class,flow_label,hop_limit,protocol,protocol_id"
+          }
+        }
+      ],
+      "order": 8,
+      "cursor_strategy": "copy",
+      "source_field": "ipv6_specific_data",
+      "target_field": "ipv6_specific_data",
+      "extractor_config": {},
+      "condition_type": "none",
+      "condition_value": ""
+    },
+    {
+      "title": "Strip the domain name",
+      "extractor_type": "regex_replace",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "source",
+      "target_field": "source",
+      "extractor_config": {
+        "regex": "^(.*).YOURDOMAIN.TLD",
+        "replacement": "$1",
+        "replace_all": true
+      },
+      "condition_type": "none",
+      "condition_value": ""
+    },
+    {
+      "title": "opnsense filterlog data",
+      "extractor_type": "regex",
+      "converters": [],
+      "order": 4,
+      "cursor_strategy": "copy",
+      "source_field": "full_message",
+      "target_field": "opnsense_log_data",
+      "extractor_config": {
+        "regex_value": "filterlog.*\\]:? ([^,]+,.+)"
+      },
+      "condition_type": "none",
+      "condition_value": ""
+    }
+  ],
+  "version": "4.3.6"
+}
